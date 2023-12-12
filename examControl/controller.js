@@ -49,3 +49,29 @@ export const activatedExamMiddleware = async (req, res, next) => {
 
   next();
 };
+
+export const reloginCandidate = async (req, res) => {
+  const candidate = await candidateModel.findOne({
+    examination: req.examination,
+    registrationNumber: req.body.registrationNumber,
+  });
+
+  if (!candidate)
+    return res
+      .status(400)
+      .send("No candidate found with this registration number");
+
+  await candidateModel.updateOne(
+    { _id: candidate._id },
+    { isWriting: false, ipAddress: "" }
+  );
+  res.send("Candidate relogged in");
+};
+
+export const reloginAllCandidates = async (req, res) => {
+  await candidateModel.updateMany(
+    { examination: req.examination },
+    { isWriting: false, ipAddress: "" }
+  );
+  res.send("Candidate relogged in");
+};

@@ -3,6 +3,8 @@ import subjectModel from "./subjectModel.js";
 import candidateModel from "./candidateModel.js";
 import questionBankModel from "./questionBankModel.js";
 import examScheduleModel from "./examScheduleModel.js";
+import questionBankCategoryModel from "./questionBankCategoryModel.js";
+import { RandomizeQuestions } from "./util.js";
 
 export const statuses = {
   ACTIVATED: "ACTIVATED",
@@ -41,10 +43,33 @@ export const saveCandidates = async (req, res) => {
 export const saveQuestionBanks = async (req, res) => {
   try {
     await questionBankModel.deleteMany();
+    await questionBankCategoryModel.deleteMany();
 
     await questionBankModel.create(req.body);
 
     res.send("Question banks created");
+
+    for (let i = 0; i < req.body.length; i++) {
+      for (let j = 0; j < 5; j++) {
+        await questionBankCategoryModel.create({
+          questionBank: req.body[i]._id,
+          subject: req.body[i].subject,
+          questionCategory: j + 1,
+          questions: req.body[i].questions,
+        });
+      }
+    }
+
+    const categories = await questionBankCategoryModel.find();
+
+    for (let i = 0; i < categories; i++) {
+      const questions = categories[i].questions;
+
+      await questionBankCategoryModel.updateOne(
+        { _id: categories[i]._id },
+        { questions: RandomizeQuestions(questions, questions) }
+      );
+    }
   } catch (error) {
     res.status(500).send(new Error(error).message);
   }
