@@ -4,6 +4,12 @@ import candidateModel from "./candidateModel.js";
 import questionBankModel from "./questionBankModel.js";
 import examScheduleModel from "./examScheduleModel.js";
 
+export const statuses = {
+  ACTIVATED: "ACTIVATED",
+  TAKEN: "TAKEN",
+  UPLOADED: "UPLOADED",
+  NOTTAKEN: "NOT TAKEN",
+};
 export const saveExamination = async (req, res) => {
   try {
     const exam = await examinationModel.findById(req.body.examination._id);
@@ -54,4 +60,17 @@ export const saveSchedule = async (req, res) => {
   } catch (error) {
     res.status(500).send(new Error(error).message);
   }
+};
+
+export const viewSchedule = async (req, res) => {
+  const schedule = await examScheduleModel.findOne().populate("examination");
+  res.send(schedule);
+};
+
+export const activateexam = async (req, res) => {
+  await examScheduleModel.updateOne(
+    { _id: req.params.id },
+    { status: statuses.ACTIVATED }
+  );
+  res.send("Examination Activated");
 };
