@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { RandomizeQuestions } from "./util.js";
 const { Schema, model } = mongoose;
 
 const schema = new Schema({

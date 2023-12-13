@@ -62,13 +62,22 @@ export const saveQuestionBanks = async (req, res) => {
 
     const categories = await questionBankCategoryModel.find();
 
-    for (let i = 0; i < categories; i++) {
-      const questions = categories[i].questions;
-
-      await questionBankCategoryModel.updateOne(
-        { _id: categories[i]._id },
-        { questions: RandomizeQuestions(questions, questions) }
+    for (let i = 0; i < categories.length; i++) {
+      const randomizedQuestions = RandomizeQuestions(
+        categories[i].questions,
+        categories[i].questions
       );
+
+      const unique = [];
+
+      randomizedQuestions.forEach((d) => {
+        const exist = unique.find((c) => c.questionId === d.questionId);
+        if (!exist) unique.push(d);
+      });
+      //console.log(randomizedQuestions.length);
+      await questionBankCategoryModel.findByIdAndUpdate(categories[i]._id, {
+        questions: unique,
+      });
     }
   } catch (error) {
     res.status(500).send(new Error(error).message);
