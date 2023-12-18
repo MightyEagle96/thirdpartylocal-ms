@@ -5,6 +5,7 @@ import questionBankModel from "./questionBankModel.js";
 import examScheduleModel from "./examScheduleModel.js";
 import questionBankCategoryModel from "./questionBankCategoryModel.js";
 import { RandomizeQuestions } from "./util.js";
+import responseModel from "./responseModel.js";
 
 export const statuses = {
   ACTIVATED: "ACTIVATED",
@@ -12,6 +13,8 @@ export const statuses = {
   UPLOADED: "UPLOADED",
   NOTTAKEN: "NOT TAKEN",
 };
+
+let processing = false;
 export const saveExamination = async (req, res) => {
   try {
     const exam = await examinationModel.findById(req.body.examination._id);
@@ -33,6 +36,7 @@ export const saveExamination = async (req, res) => {
 export const saveCandidates = async (req, res) => {
   try {
     await candidateModel.deleteMany();
+    await responseModel.deleteMany();
     await candidateModel.create(req.body);
     res.send("Candidates created");
   } catch (error) {
@@ -97,6 +101,7 @@ export const saveSchedule = async (req, res) => {
 };
 
 export const viewSchedule = async (req, res) => {
+  //this is because only one schedule can exist on the server at a particular time
   const schedule = await examScheduleModel.findOne().populate("examination");
   res.send(schedule);
 };
@@ -107,4 +112,62 @@ export const activateexam = async (req, res) => {
     { status: statuses.ACTIVATED }
   );
   res.send("Examination Activated");
+};
+
+export const endExam = async (req, res) => {
+  await examScheduleModel.updateOne(
+    { examination: req.examination },
+    { status: statuses.TAKEN }
+  );
+  res.send("Examination ended");
+  processing = true;
+
+  const allResponses = await responseModel.find({
+    examination: req.examination,
+  });
+
+  for (let i = 0; i < allResponses.length; i++) {
+    const { responses } = allResponses[i];
+
+    const subjectScore = [];
+
+    for (let j = 0; j < responses.length; j++) {
+      const existing = subjectScore.findIndex(
+        (c) => c.subject.toString() === responses[j].subject.toString()
+      );
+
+      if (existing < 0) {
+        subjectScore.push({
+          subject: responses[j].subject,
+          score: responses[j].score,
+        });
+      } else {
+        subjectScore[existing].score += responses[j].score;
+      }
+    }
+
+    await responseModel.updateOne(
+      { _id: allResponses[i]._id },
+      { subjectScore }
+    );
+  }
+  processing = false;
+};
+
+export const getResponses = async (req, res) => {
+  try {
+    if (processing)
+      return res
+        .status(503)
+        .send("Server is still processing candidate's responses");
+
+    const responses = await responseModel
+      .find({ examination: req.params.id })
+      .select({ responses: 0 });
+
+    res.send(responses);
+  } catch (error) {
+    console.log(new Error(error).message);
+    res.status(500).send(new Error(error).message);
+  }
 };

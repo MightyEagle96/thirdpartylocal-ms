@@ -5,6 +5,7 @@ import {
   reloginAllCandidates,
   reloginCandidate,
 } from "./controller.js";
+import { endExam, getResponses } from "../downloadAndUpload/controller.js";
 
 const examRouter = express.Router();
 
@@ -16,6 +17,8 @@ examRouter
     rootPath("reloginallcandidates"),
     activatedExamMiddleware,
     reloginAllCandidates
-  );
+  )
+  .get(rootPath("endexam"), activatedExamMiddleware, endExam)
+  .get(rootPath("getresponses/:id"), getResponses);
 
 export default examRouter;

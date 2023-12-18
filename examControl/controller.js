@@ -1,6 +1,9 @@
 import candidateModel from "../downloadAndUpload/candidateModel.js";
 import { statuses } from "../downloadAndUpload/controller.js";
 import examScheduleModel from "../downloadAndUpload/examScheduleModel.js";
+import responseModel from "../downloadAndUpload/responseModel.js";
+
+let processing = false;
 
 export const examCandidates = async (req, res) => {
   const totalCandidates = await candidateModel.countDocuments({
