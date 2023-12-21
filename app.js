@@ -34,6 +34,8 @@ const config = {
 
 app.use(cors(config));
 app.use(express.json({ limit: "50mb" }));
+app.use(express.static("build"));
+app.use(express.static(path.join(__dirname, "build")));
 app.use(morgan("dev"));
 app
   .get("/", (req, res) => res.send("Hello from the server"))
