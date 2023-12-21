@@ -35,8 +35,8 @@ export const examCandidates = async (req, res) => {
       startTime: 1,
       stopTime: 1,
       duration: 1,
-    })
-    .sort({ registrationNumber: 1 });
+    });
+  //.sort({ firstName: 1, lastName: 1 });
 
   res.send({ totalCandidates, candidates, writing, submitted });
 };
