@@ -171,3 +171,11 @@ export const getResponses = async (req, res) => {
     res.status(500).send(new Error(error).message);
   }
 };
+
+export const updateExamWithUploaded = async (req, res) => {
+  await examScheduleModel.updateOne(
+    { examination: req.params.id },
+    { status: statuses.UPLOADED }
+  );
+  res.send("Responses Recieved");
+};

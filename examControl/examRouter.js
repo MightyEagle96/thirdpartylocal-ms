@@ -5,7 +5,11 @@ import {
   reloginAllCandidates,
   reloginCandidate,
 } from "./controller.js";
-import { endExam, getResponses } from "../downloadAndUpload/controller.js";
+import {
+  endExam,
+  getResponses,
+  updateExamWithUploaded,
+} from "../downloadAndUpload/controller.js";
 
 const examRouter = express.Router();
 
@@ -19,6 +23,7 @@ examRouter
     reloginAllCandidates
   )
   .get(rootPath("endexam"), activatedExamMiddleware, endExam)
-  .get(rootPath("getresponses/:id"), getResponses);
+  .get(rootPath("getresponses/:id"), getResponses)
+  .get(rootPath("uploadresponse/:id"), updateExamWithUploaded);
 
 export default examRouter;

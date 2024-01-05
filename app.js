@@ -19,20 +19,21 @@ const whiteList = [
   "http://localhost:2300",
   "http://localhost:4567",
   "http://localhost:5000",
+  "http://localhost:4500",
 ];
 
-const config = {
-  origin: function (origin, cb) {
-    if (whiteList.indexOf(origin) !== -1) {
-      cb(null, true);
-    } else {
-      cb(new Error("NOT ALLOWED").message);
-    }
-  },
-  credentials: true,
-};
+// const config = {
+//   origin: function (origin, cb) {
+//     if (whiteList.indexOf(origin) !== -1) {
+//       cb(null, true);
+//     } else {
+//       cb(new Error("NOT ALLOWED").message);
+//     }
+//   },
+//   credentials: true,
+// };
 
-app.use(cors(config));
+app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static("build"));
 app.use(express.static(path.join(__dirname, "build")));
