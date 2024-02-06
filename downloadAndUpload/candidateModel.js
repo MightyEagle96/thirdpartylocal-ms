@@ -18,7 +18,7 @@ const schema = new Schema({
   examState: String,
   examTown: String,
   assignedToCentre: { type: Boolean, default: false },
-  answeredQuestions: { type: Boolean, default: 0 },
+  answeredQuestions: { type: Number, default: 0 },
   synccandidate: { type: Boolean, default: false },
   startTime: Date,
   stopTime: Date,
