@@ -16,6 +16,7 @@ const schema = new Schema({
   subjectScore: [
     { score: Number, subject: { type: Schema.Types.ObjectId, ref: "Subject" } },
   ],
+  attempts: { type: Number, default: 0 },
 });
 
 export default model("Response", schema);
