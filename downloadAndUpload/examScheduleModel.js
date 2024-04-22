@@ -10,6 +10,8 @@ const schema = new Schema({
       questionBank: { type: Schema.Types.ObjectId, ref: "QuestionBank" },
     },
   ],
+  startTime: Date,
+  stopTime: Date,
   status: { type: String, default: "NOT TAKEN" },
   scheduledDate: { date: Date, dateString: String },
   scheduledTime: { hour: Number, minute: Number },
