@@ -4,6 +4,9 @@ import downloadAndUploadRouter from "./downloadAndUpload/downloadAndUploadRouter
 import examRouter from "./examControl/examRouter.js";
 const router = express.Router();
 
-router.use(centreRouter).use(downloadAndUploadRouter).use(examRouter);
+router
+  .use(centreRouter)
+  .use(downloadAndUploadRouter)
+  .use("/aguila/examination/", examRouter);
 
 export default router;

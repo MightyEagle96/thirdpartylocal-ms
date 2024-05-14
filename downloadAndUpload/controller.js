@@ -109,7 +109,7 @@ export const viewSchedule = async (req, res) => {
 export const activateexam = async (req, res) => {
   await examScheduleModel.updateOne(
     { _id: req.params.id },
-    { status: statuses.ACTIVATED }
+    { status: statuses.ACTIVATED, startTime: new Date() }
   );
   res.send("Examination Activated");
 };
@@ -117,7 +117,7 @@ export const activateexam = async (req, res) => {
 export const endExam = async (req, res) => {
   await examScheduleModel.updateOne(
     { examination: req.examination },
-    { status: statuses.TAKEN }
+    { status: statuses.TAKEN, stopTime: new Date() }
   );
   res.send("Examination ended");
   processing = true;
@@ -161,13 +161,10 @@ export const getResponses = async (req, res) => {
         .status(503)
         .send("Server is still processing candidate's responses");
 
-    const responses = await responseModel
-      .find({ examination: req.params.id })
-      .select({ responses: 0 });
+    const responses = await responseModel.find({ examination: req.params.id });
 
     res.send(responses);
   } catch (error) {
-    console.log(new Error(error).message);
     res.status(500).send(new Error(error).message);
   }
 };

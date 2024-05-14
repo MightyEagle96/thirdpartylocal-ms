@@ -27,7 +27,7 @@ const schema = new Schema({
   hasSeenInstructionPage: { type: Boolean, default: false },
   scheduledDate: { date: Date, dateString: String },
   scheduledTime: { hour: Number, minute: Number },
-  reloginAttempts: [{ ipAddress: String, loggedInTime: { type: Date } }],
+  candidateSystems: [{ ipAddress: String, loggedInTime: { type: Date } }],
   ipAddress: String,
   submitted: { type: Boolean, default: false },
   errorMessage: String,

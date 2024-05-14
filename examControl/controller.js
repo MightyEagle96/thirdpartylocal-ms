@@ -36,9 +36,30 @@ export const examCandidates = async (req, res) => {
       stopTime: 1,
       duration: 1,
     });
-  //.sort({ firstName: 1, lastName: 1 });
 
-  res.send({ totalCandidates, candidates, writing, submitted });
+  const started = await candidateModel.countDocuments({
+    examination: req.examination,
+    hasSeenInstructionPage: true,
+  });
+
+  const centreReport = await examScheduleModel.findOne({
+    examination: req.examination,
+  });
+
+  res.send({
+    totalCandidates,
+    candidates,
+    writing,
+    submitted,
+    report: {
+      candidates: totalCandidates,
+      started,
+      writing,
+      submitted,
+      timeStarted: centreReport?.startTime,
+      timeEnded: centreReport?.stopTime,
+    },
+  });
 };
 
 export const activatedExamMiddleware = async (req, res, next) => {
@@ -77,4 +98,38 @@ export const reloginAllCandidates = async (req, res) => {
     { isWriting: false, ipAddress: "" }
   );
   res.send("Candidate relogged in");
+};
+
+export const resetCandidate = async (req, res) => {
+  /**
+   * To reset a candidate
+   * 1. reset the IP address
+   * 2. return the time back to the original duration
+   * 3. reset the responses back to 0
+   */
+
+  const candidate = await candidateModel.findOne(req.body);
+
+  if (!candidate)
+    return res
+      .status(400)
+      .send("No candidate found with this examination number");
+
+  const session = await examScheduleModel.findOne({
+    examination: req.examination,
+  });
+
+  await candidateModel.updateOne(
+    { _id: candidate._id },
+    {
+      isWriting: false,
+      ipAddress: "",
+      answeredQuestions: 0,
+      duration: session.duration,
+    }
+  );
+
+  await responseModel.findOneAndDelete({ candidate: candidate._id });
+
+  res.send("Candidate has been reset");
 };

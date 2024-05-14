@@ -4,6 +4,7 @@ import {
   examCandidates,
   reloginAllCandidates,
   reloginCandidate,
+  resetCandidate,
 } from "./controller.js";
 import {
   endExam,
@@ -15,15 +16,12 @@ const examRouter = express.Router();
 
 const rootPath = (path) => `/aguila/examination/${path}`;
 examRouter
-  .get(rootPath("candidates"), activatedExamMiddleware, examCandidates)
-  .post(rootPath("relogincandidate"), activatedExamMiddleware, reloginCandidate)
-  .get(
-    rootPath("reloginallcandidates"),
-    activatedExamMiddleware,
-    reloginAllCandidates
-  )
-  .get(rootPath("endexam"), activatedExamMiddleware, endExam)
-  .get(rootPath("getresponses/:id"), getResponses)
-  .get(rootPath("uploadresponse/:id"), updateExamWithUploaded);
+  .get("/candidates", activatedExamMiddleware, examCandidates)
+  .post("/relogincandidate", activatedExamMiddleware, reloginCandidate)
+  .get("/reloginallcandidates", activatedExamMiddleware, reloginAllCandidates)
+  .post("/resetcandidate", activatedExamMiddleware, resetCandidate)
+  .get("/endexam", activatedExamMiddleware, endExam)
+  .get("getresponses/:id", getResponses)
+  .get("uploadresponse/:id", updateExamWithUploaded);
 
 export default examRouter;
