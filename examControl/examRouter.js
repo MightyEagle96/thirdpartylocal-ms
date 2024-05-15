@@ -14,14 +14,13 @@ import {
 
 const examRouter = express.Router();
 
-const rootPath = (path) => `/aguila/examination/${path}`;
 examRouter
   .get("/candidates", activatedExamMiddleware, examCandidates)
   .post("/relogincandidate", activatedExamMiddleware, reloginCandidate)
   .get("/reloginallcandidates", activatedExamMiddleware, reloginAllCandidates)
   .post("/resetcandidate", activatedExamMiddleware, resetCandidate)
   .get("/endexam", activatedExamMiddleware, endExam)
-  .get("getresponses/:id", getResponses)
-  .get("uploadresponse/:id", updateExamWithUploaded);
+  .get("/getresponses/:id", getResponses)
+  .get("/uploadresponse/:id", updateExamWithUploaded);
 
 export default examRouter;

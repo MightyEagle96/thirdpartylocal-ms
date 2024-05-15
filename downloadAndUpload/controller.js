@@ -122,6 +122,9 @@ export const endExam = async (req, res) => {
   res.send("Examination ended");
   processing = true;
 
+  //update
+  await candidateModel.updateMany({ isWriting: false, ipAddress: "" });
+
   const allResponses = await responseModel.find({
     examination: req.examination,
   });
@@ -163,7 +166,45 @@ export const getResponses = async (req, res) => {
 
     const responses = await responseModel.find({ examination: req.params.id });
 
-    res.send(responses);
+    //get the analysis reports
+    /*
+    time started
+
+    time ended
+
+    number of candidates
+
+    number of candidates started 
+
+    number submitted
+    */
+
+    const candidates = await candidateModel.countDocuments({
+      examination: req.params.id,
+    });
+
+    const started = await candidateModel.countDocuments({
+      examination: req.params.id,
+      hasSeenInstructionPage: true,
+    });
+
+    const submitted = await candidateModel.countDocuments({
+      examination: req.params.id,
+      submitted: true,
+    });
+    const schedule = await examScheduleModel.findOne({
+      examination: req.params.id,
+    });
+
+    const analysis = {
+      candidates,
+      started,
+      submitted,
+      timeStarted: schedule.startTime,
+      timeEnded: schedule.stopTime,
+    };
+
+    res.send({ analysis, responses });
   } catch (error) {
     res.status(500).send(new Error(error).message);
   }
