@@ -17,6 +17,14 @@ const schema = new Schema({
     { score: Number, subject: { type: Schema.Types.ObjectId, ref: "Subject" } },
   ],
   attempts: { type: Number, default: 0 },
+  candidateSystems: [
+    {
+      ipAddress: String,
+      loggedInTime: { type: Date },
+      browserName: String,
+      browserVersion: String,
+    },
+  ],
 });
 
 export default model("Response", schema);
