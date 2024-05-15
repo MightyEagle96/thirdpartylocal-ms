@@ -27,7 +27,14 @@ const schema = new Schema({
   hasSeenInstructionPage: { type: Boolean, default: false },
   scheduledDate: { date: Date, dateString: String },
   scheduledTime: { hour: Number, minute: Number },
-  candidateSystems: [{ ipAddress: String, loggedInTime: { type: Date } }],
+  candidateSystems: [
+    {
+      ipAddress: String,
+      loggedInTime: { type: Date },
+      browserName: String,
+      browserVersion: String,
+    },
+  ],
   ipAddress: String,
   submitted: { type: Boolean, default: false },
   errorMessage: String,
