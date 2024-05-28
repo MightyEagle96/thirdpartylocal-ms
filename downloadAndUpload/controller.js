@@ -217,3 +217,29 @@ export const updateExamWithUploaded = async (req, res) => {
   );
   res.send("Responses Recieved");
 };
+
+//to save the synchronized candidates we have
+
+export const saveSynchronizedCandidates = async (req, res) => {
+  try {
+    const candidates = await req.body;
+
+    const schedule = await examScheduleModel.findOne({
+      examination: req.examination,
+    });
+
+    for (let i = 0; i < candidates.length; i++) {
+      const existing = await candidateModel.findById(candidates[i]._id);
+
+      if (!existing) {
+        await candidateModel.create({
+          ...candidates[i],
+          duration: schedule.duration,
+        });
+      }
+    }
+    res.send("Synchronization successful");
+  } catch (error) {
+    res.status(500).send(new Error(error).message);
+  }
+};

@@ -27,6 +27,23 @@ export const loginCentre = async (req, res) => {
   res.send(centre);
 };
 
+export const toggleZeroClient = async (req, res) => {
+  const centre = await centreModel.findOne();
+
+  await centreModel.updateOne(
+    { _id: centre._id },
+    { zeroClient: !centre.zeroClient }
+  );
+
+  res.send("Action successful");
+};
+
+export const zeroClientStatus = async (req, res) => {
+  const centre = await centreModel.findOne();
+
+  res.send({ status: centre.zeroClient });
+};
+
 export const resetServer = async (req, res) => {
   await candidateModel.deleteMany();
   await examinationModel.deleteMany();

@@ -5,8 +5,10 @@ import {
   saveExamination,
   saveQuestionBanks,
   saveSchedule,
+  saveSynchronizedCandidates,
   viewSchedule,
 } from "./controller.js";
+import { activatedExamMiddleware } from "../examControl/controller.js";
 
 const downloadAndUploadRouter = express.Router();
 
@@ -18,6 +20,11 @@ downloadAndUploadRouter
   .post(rootPath("savequestionbanks"), saveQuestionBanks)
   .post(rootPath("saveschedule"), saveSchedule)
   .get(rootPath("viewschedule"), viewSchedule)
-  .get(rootPath("activateexam/:id"), activateexam);
+  .get(rootPath("activateexam/:id"), activateexam)
+  .post(
+    rootPath("savesynccandidates"),
+    activatedExamMiddleware,
+    saveSynchronizedCandidates
+  );
 
 export default downloadAndUploadRouter;
