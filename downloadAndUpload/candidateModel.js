@@ -13,7 +13,7 @@ const schema = new Schema({
   subjects: [{ type: Schema.Types.ObjectId, ref: "Subject" }],
   seatNumber: String,
   avatar: String,
-  duration: Number,
+  duration: { type: Number, default: 180000 },
   examination: { type: Schema.Types.ObjectId, ref: "Examination" },
   examState: String,
   examTown: String,
