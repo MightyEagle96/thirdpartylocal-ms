@@ -123,7 +123,11 @@ export const endExam = async (req, res) => {
   processing = true;
 
   //update
-  await candidateModel.updateMany({ isWriting: false, ipAddress: "" });
+  await candidateModel.updateMany({
+    isWriting: false,
+    ipAddress: "",
+    submitted: true,
+  });
 
   const allResponses = await responseModel.find({
     examination: req.examination,
