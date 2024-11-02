@@ -48,5 +48,7 @@ app
 //.use("*", (req, res) => res.status(404).send("Route not found"));
 
 app.listen(4500, () => {
-  console.log("Server is on now");
+  console.log(
+    "Aguila Monitoring Server is live. Open http://localhost:4500 to view"
+  );
 });
